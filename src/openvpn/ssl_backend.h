@@ -326,6 +326,12 @@ void tls_ctx_load_ca(struct tls_root_ctx *ctx, const char *ca_file,
                      bool ca_file_inline, const char *ca_path, bool tls_server);
 
 /**
+ * Get the MD5 digest hex string for the first configured certificate authority.
+ * If there is no configured CA, returns NULL.
+ */
+const char *pia_tls_ctx_get_first_ca_digest(struct tls_root_ctx *ctx);
+
+/**
  * Load extra certificate authority certificates from the given file or path.
  * These Load extra certificates that are part of our own certificate
  * chain but shouldn't be included in the verify chain.

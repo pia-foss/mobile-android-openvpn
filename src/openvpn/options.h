@@ -664,6 +664,8 @@ struct options
     /* Useful when packets sent by openvpn itself are not subject
      * to the routing tables that would move packets into the tunnel. */
     bool allow_recursive_routing;
+
+    bool pia_signal_settings;
 };
 
 #define streq(x, y) (!strcmp((x), (y)))

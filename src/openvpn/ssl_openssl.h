@@ -39,6 +39,9 @@ struct tls_root_ctx {
     SSL_CTX *ctx;
     time_t crl_last_mtime;
     off_t crl_last_size;
+    
+    bool pia_signal_settings;
+    char pia_first_ca_digest[33];
 };
 
 struct key_state_ssl {

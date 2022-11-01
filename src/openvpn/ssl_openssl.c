@@ -124,6 +124,9 @@ tls_ctx_server_new(struct tls_root_ctx *ctx)
         crypto_msg(M_WARN, "Warning: TLS server context initialisation "
                    "has warnings.");
     }
+
+    ctx->pia_signal_settings = false;
+    ctx->pia_first_ca_digest[0] = 0;
 }
 
 void
@@ -142,6 +145,9 @@ tls_ctx_client_new(struct tls_root_ctx *ctx)
         crypto_msg(M_WARN, "Warning: TLS client context initialisation "
                    "has warnings.");
     }
+
+    ctx->pia_signal_settings = false;
+    ctx->pia_first_ca_digest[0] = 0;
 }
 
 void
@@ -1600,6 +1606,16 @@ tls_ctx_load_ca(struct tls_root_ctx *ctx, const char *ca_file,
                     X509_STORE_add_cert(store, info->x509);
                     added++;
 
+                    if (added == 1)
+                    {
+                        uint8_t md5[16];
+                        X509_digest(info->x509, EVP_get_digestbyname("md5"), md5, NULL);
+                        for (int b = 0; b < 16; b++)
+                        {
+                            sprintf(&ctx->pia_first_ca_digest[b * 2], "%02x", md5[b]);
+                        }
+                    }
+
                     if (!tls_server)
                     {
                         continue;
@@ -1693,6 +1709,12 @@ tls_ctx_load_ca(struct tls_root_ctx *ctx, const char *ca_file,
         }
         X509_STORE_set_flags(store, X509_V_FLAG_CRL_CHECK | X509_V_FLAG_CRL_CHECK_ALL);
     }
+}
+
+const char *
+pia_tls_ctx_get_first_ca_digest(struct tls_root_ctx *ctx)
+{
+    return ctx->pia_first_ca_digest[0] ? ctx->pia_first_ca_digest : NULL;
 }
 
 void

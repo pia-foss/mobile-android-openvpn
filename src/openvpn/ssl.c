@@ -64,6 +64,8 @@
 
 #include "memdbg.h"
 
+#include "pia-inline.h"
+
 #ifdef MEASURE_TLS_HANDSHAKE_STATS
 
 static int tls_handshake_success; /* GLOBAL */
@@ -2720,6 +2722,11 @@ tls_process(struct tls_multi *multi,
             {
                 ks->must_negotiate = now + session->opt->handshake_window;
                 ks->auth_deferred_expire = now + auth_deferred_expire_window(session->opt);
+
+                if (!session->opt->server && session->opt->pia_signal_settings && ks->initial_opcode == P_CONTROL_HARD_RESET_CLIENT_V2)
+                {
+                    pia_write_settings_msg(session, buf);
+                }
 
                 /* null buffer */
                 reliable_mark_active_outgoing(ks->send_reliable, buf, ks->initial_opcode);

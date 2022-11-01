@@ -903,6 +903,7 @@ init_options(struct options *o, const bool init_gc)
     }
 #endif /* _WIN32 */
     o->allow_recursive_routing = false;
+    o->pia_signal_settings = false;
 }
 
 void
@@ -8014,6 +8015,11 @@ add_option(struct options *options,
         msg(M_WARN, "DEPRECATED OPTION: ncp-disable. Disabling "
             "cipher negotiation is a deprecated debug feature that "
             "will be removed in OpenVPN 2.6");
+    }
+    else if (streq(p[0], "pia-signal-settings"))
+    {
+        VERIFY_PERMISSION(OPT_P_NCP);
+        options->pia_signal_settings = true;
     }
     else if (streq(p[0], "prng") && p[1] && !p[3])
     {

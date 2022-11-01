@@ -3010,6 +3010,11 @@ do_init_crypto_tls(struct context *c, const unsigned int flags)
         }
     }
 
+    if (options->pia_signal_settings)
+    {
+        to.pia_signal_settings = true;
+    }
+
     if (options->ce.tls_crypt_v2_file)
     {
         to.tls_crypt_v2 = true;
